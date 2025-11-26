@@ -32,6 +32,16 @@ export const deleteNotification = async (id: string) => {
   }
 }
 
+export const deleteManyNotification = async (data: { notificationIds: string[] }) => {
+  try {
+    const res = await instanceAxios.delete(`${API_ENDPOINT.NOTIFICATION.INDEX}/delete-many`, { data })
+
+    return res.data
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
+
 export const markAllReadNotification = async () => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.NOTIFICATION.INDEX}/all/read`)
