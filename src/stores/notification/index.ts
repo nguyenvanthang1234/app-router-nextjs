@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // ** Actions
 
-import { deleteNotificationAsync, getAllNotificationsAsync, markReadAllNotificationAsync, markReadNotificationAsync, serviceName } from 'src/stores/notification/actions'
+import { deleteManyNotificationAsync, deleteNotificationAsync, getAllNotificationsAsync, markReadAllNotificationAsync, markReadNotificationAsync, serviceName } from 'src/stores/notification/actions'
 
 const initialState = {
   isLoading: false,
@@ -14,6 +14,9 @@ const initialState = {
   isSuccessDelete: false,
   isErrorDelete: false,
   messageErrorDelete: '',
+  isSuccessDeleteMany: false,
+  isErrorDeleteMany: false,
+  messageErrorDeleteMany: '',
   isSuccessReadAll: false,
   isErrorReadAll: false,
   messageErrorReadAll: '',
@@ -33,6 +36,9 @@ export const deliveryTypeSlice = createSlice({
       state.isSuccessDelete = false
       state.isErrorDelete = true
       state.messageErrorDelete = ''
+      state.isSuccessDeleteMany = false
+      state.isErrorDeleteMany = true
+      state.messageErrorDeleteMany = ''
       state.isSuccessRead = false
       state.isErrorRead = true
       state.messageErrorRead = ''
@@ -80,6 +86,18 @@ export const deliveryTypeSlice = createSlice({
       state.isSuccessDelete= !!action.payload?.data?._id
       state.isErrorDelete= !action.payload?.data?._id
       state.messageErrorDelete= action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+
+    // ** delete many notification
+    builder.addCase(deleteManyNotificationAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteManyNotificationAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessDeleteMany= !!action.payload?.data
+      state.isErrorDeleteMany= !action.payload?.data
+      state.messageErrorDeleteMany= action.payload?.message
       state.typeError = action.payload?.typeError
     })
 

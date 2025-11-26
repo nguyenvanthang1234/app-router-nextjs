@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** services
-import { deleteNotification, getAllNotification, markAllReadNotification, markReadNotification } from 'src/services/notification'
+import { deleteManyNotification, deleteNotification, getAllNotification, markAllReadNotification, markReadNotification } from 'src/services/notification'
 
 // ** Types
 import { TParamsGetNotification } from 'src/types/notification'
@@ -21,6 +21,15 @@ export const deleteNotificationAsync = createAsyncThunk(
   `${serviceName}/delete`,
   async (id: string) => {
     const response = await deleteNotification(id)
+
+    return response
+  }
+)
+
+export const deleteManyNotificationAsync = createAsyncThunk(
+  `${serviceName}/delete-many`,
+  async (data: { notificationIds: string[] }) => {
+    const response = await deleteManyNotification(data)
 
     return response
   }
