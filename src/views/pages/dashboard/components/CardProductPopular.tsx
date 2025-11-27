@@ -43,6 +43,7 @@ const CardProductPopular = (props: TProps) => {
       </Box>
       {data?.map((product: TProductPopular) => {
         const imageSrc = product.thumbnailUrl || product.imageUrl
+
         return (
           <MenuItem key={product._id} sx={{ gap: 2 }} onClick={() => handleNavigateDetail(product.slug)}>
             {imageSrc ? (
