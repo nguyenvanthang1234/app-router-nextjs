@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
 // ** Next Imports
 import { usePathname, useRouter } from 'next/navigation'
 
 // ** React Imports
-import { ReactNode, ReactElement, useEffect } from 'react'
+import { ReactNode, ReactElement, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18nConfig from 'src/app/i18nConfig'
 
@@ -26,13 +26,15 @@ interface AuthGuardProps {
 const AuthGuard = (props: AuthGuardProps) => {
   // ** Props
   const { children, fallback } = props
+  // ** State
+  const [showFallback, setShowFallback] = useState(true)
   // ** auth
   const authContext = useAuth()
 
   // ** router
   const router = useRouter()
   const pathName = usePathname()
-  const {i18n} = useTranslation()
+  const { i18n } = useTranslation()
   const currentLang = i18n.language
   const urlDefault = currentLang === i18nConfig.defaultLocale ? '/' : `/${currentLang}`
   const urlLogin = currentLang === i18nConfig.defaultLocale ? '/login' : `/${currentLang}/login`
@@ -67,7 +69,18 @@ const AuthGuard = (props: AuthGuardProps) => {
     }
   }, [])
 
-  if (authContext.loading || authContext.user === null) {
+  useEffect(() => {
+    // Chỉ hiển thị fallback trong lần đầu load
+    if (!authContext.loading && authContext.user !== null) {
+      setShowFallback(false)
+    }
+  }, [authContext.loading, authContext.user])
+
+  if (authContext.loading) {
+    return fallback
+  }
+
+  if (authContext.user === null && showFallback) {
     return fallback
   }
 

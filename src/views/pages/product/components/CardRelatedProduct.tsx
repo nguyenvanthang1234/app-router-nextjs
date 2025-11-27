@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** React
 import * as React from 'react'
@@ -64,7 +64,12 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
 
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='160' image={item.image} alt='image' />
+      <CardMedia
+        component='img'
+        height='160'
+        image={item.thumbnailUrl || item.imageUrl || '/images/placeholder.png'}
+        alt='image'
+      />
       <CardContent sx={{ padding: '8px 12px 12px !important' }}>
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
@@ -194,7 +199,7 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {!!item.averageRating ? (
+            {!!item.averageRating ? (
               <Typography sx={{ display: 'flex', alignItems: 'center' }}>
                 <Rating
                   name='read-only'
@@ -205,13 +210,7 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
                 />
               </Typography>
             ) : (
-              <Rating
-                name='read-only'
-                sx={{ fontSize: '16px' }}
-                defaultValue={0}
-                precision={0.5}
-                readOnly
-              />
+              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}

@@ -49,7 +49,8 @@ export type TProduct = {
   _id: string
   averageRating: number
   createdAt: Date | null
-  image: string
+  imageUrl?: string
+  thumbnailUrl?: string
   price: number
   name: string
   slug: string

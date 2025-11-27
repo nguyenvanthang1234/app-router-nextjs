@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** React
 import React, { memo, useEffect, useState } from 'react'
@@ -180,7 +180,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             address: data?.address,
             status: data?.status
           })
-          setAvatar(data?.avatar)
+          setAvatar(data?.avatarUrl || data?.avatar)
         }
         setLoading(false)
       })
@@ -233,7 +233,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
   }, [open, idUser])
 
   useEffect(() => {
-    if(open) {
+    if (open) {
       fetchAllRoles()
       fetchAllCities()
     }

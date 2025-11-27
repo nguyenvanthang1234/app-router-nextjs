@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** React
 import React, { useEffect } from 'react'
@@ -77,7 +77,7 @@ const UserDropdown = (props: TProps) => {
   const { user, logout, setUser } = useAuth()
 
   // ** Redux
-  const { userData } = useSelector((state: RootState) => state.auth)
+  const { userData } = useSelector((state: RootState) => state.auth as { userData: any })
   const permissionUser = user?.role?.permissions ?? []
 
   const open = Boolean(anchorEl)
@@ -137,12 +137,12 @@ const UserDropdown = (props: TProps) => {
           >
             <StyledBadge overlap='circular' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant='dot'>
               <Avatar sx={{ width: 32, height: 32 }}>
-                {user?.avatar ? (
+                {user?.avatarUrl || user?.avatar ? (
                   <Image
-                    src={user?.avatar || ''}
+                    src={user?.avatarUrl || user?.avatar || ''}
                     alt='avatar'
-                    width={0}
-                    height={0}
+                    width={32}
+                    height={32}
                     style={{
                       height: '32px',
                       width: '32px',
@@ -195,12 +195,12 @@ const UserDropdown = (props: TProps) => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mx: 2, pb: 2, px: 2 }}>
           <StyledBadge overlap='circular' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant='dot'>
             <Avatar sx={{ width: 32, height: 32 }}>
-              {user?.avatar ? (
+              {user?.avatarUrl || user?.avatar ? (
                 <Image
-                  src={user?.avatar || ''}
+                  src={user?.avatarUrl || user?.avatar || ''}
                   alt='avatar'
-                  width={0}
-                  height={0}
+                  width={32}
+                  height={32}
                   style={{
                     height: '32px',
                     width: '32px',
@@ -214,7 +214,8 @@ const UserDropdown = (props: TProps) => {
           </StyledBadge>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography component='span'>
-              {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language) || user?.email}
+              {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language) ||
+                user?.email}
             </Typography>
             <Typography component='span'>{user?.role?.name}</Typography>
           </Box>

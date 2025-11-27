@@ -130,7 +130,7 @@ const MyProfilePage: NextPage<TProps> = () => {
             role: data?.role?._id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language)
           })
-          setAvatar(data?.avatar)
+          setAvatar(data?.avatarUrl || data?.avatar)
           // Update user in AuthContext to reflect changes in UI (header, etc.)
           setUser({ ...data })
         }

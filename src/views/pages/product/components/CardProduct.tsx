@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** React
 import React, { useEffect, useMemo } from 'react'
@@ -75,7 +75,7 @@ const CardProduct = (props: TCardProduct) => {
     const listOrderItems = convertUpdateProductToCart(orderItems, {
       name: item.name,
       amount: 1,
-      image: item.image,
+      image: item.thumbnailUrl || item.imageUrl || '',
       price: item.price,
       discount: discountItem,
       product: item._id,
@@ -117,7 +117,12 @@ const CardProduct = (props: TCardProduct) => {
 
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
+      <CardMedia
+        component='img'
+        height='194'
+        image={item.thumbnailUrl || item.imageUrl || '/images/placeholder.png'}
+        alt='image'
+      />
       <CardContent sx={{ padding: '8px 12px' }}>
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
@@ -231,64 +236,64 @@ const CardProduct = (props: TCardProduct) => {
           </Typography>
         )}
         {(item?.location?.name || item.views) && (
-          <Box sx={{display: "flex", alignItems: "center", gap: "10px", mt: 2}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', mt: 2 }}>
             {item?.location?.name && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <Icon icon='carbon:location' />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='carbon:location' />
 
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                {item?.location?.name}
-              </Typography>
-            </Box>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.location?.name}
+                </Typography>
+              </Box>
             )}
             {item?.views && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <Icon icon='lets-icons:view-light' />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='lets-icons:view-light' />
 
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                {item?.views}
-              </Typography>
-            </Box>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.views}
+                </Typography>
+              </Box>
             )}
             {!!item?.uniqueViews?.length && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <Icon icon='mdi:account-view-outline' />
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                {item?.uniqueViews?.length}
-              </Typography>
-            </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='mdi:account-view-outline' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.uniqueViews?.length}
+                </Typography>
+              </Box>
             )}
-             {!!item?.likedBy?.length && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <Icon icon='icon-park-outline:like' />
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                {item?.likedBy?.length}
-              </Typography>
-            </Box>
+            {!!item?.likedBy?.length && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='icon-park-outline:like' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.likedBy?.length}
+                </Typography>
+              </Box>
             )}
           </Box>
         )}
@@ -305,13 +310,7 @@ const CardProduct = (props: TCardProduct) => {
                 />
               </Typography>
             ) : (
-              <Rating
-                name='read-only'
-                sx={{ fontSize: '16px' }}
-                defaultValue={0}
-                precision={0.5}
-                readOnly
-              />
+              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}

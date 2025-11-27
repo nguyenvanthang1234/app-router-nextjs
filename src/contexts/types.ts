@@ -41,6 +41,8 @@ export type UserDataType = {
   middleName: string
   password: string
   avatar?: string | null
+  avatarUrl?: string | null
+  avatarThumbnail?: string | null
   likedProducts: string[]
   city: string
   phoneNumber: string,

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // ** React
 import React, { useEffect, useState } from 'react'
@@ -54,7 +54,7 @@ interface TCreateEditProduct {
   open: boolean
   onClose: () => void
   idProduct?: string
-  optionTypes: {label:string, value: string}[]
+  optionTypes: { label: string; value: string }[]
 }
 
 type TDefaultValue = {
@@ -78,7 +78,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   // ** Props
-  const { open, onClose, idProduct,optionTypes } = props
+  const { open, onClose, idProduct, optionTypes } = props
 
   // Hooks
   const theme = useTheme()
@@ -208,7 +208,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             status: data.status ? 1 : 0,
             id: idProduct,
             countInStock: Number(data.countInStock),
-            location: data.location,
+            location: data.location
           })
         )
       } else {
@@ -257,7 +257,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountEndDate: data.discountEndDate ? new Date(data.discountEndDate) : null,
             discountStartDate: data.discountStartDate ? new Date(data.discountStartDate) : null
           })
-          setImageProduct(data?.image)
+          setImageProduct(data?.imageUrl || data?.image)
         }
         setLoading(false)
       })

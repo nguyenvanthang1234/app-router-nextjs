@@ -1,4 +1,4 @@
-"use client"
+'use client'
 // ** React Imports
 import { createContext, useEffect, useState, ReactNode } from 'react'
 
@@ -6,10 +6,17 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 // ** Config
-import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
+import authConfig, { LIST_PAGE_PUBLIC, USER_DATA } from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType, LoginGoogleParams, LoginFacebookParams } from './types'
+import {
+  AuthValuesType,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+  LoginGoogleParams,
+  LoginFacebookParams
+} from './types'
 
 // ** services
 import { loginAuth, loginAuthFacebook, loginAuthGoogle, logoutAuth } from 'src/services/auth'
@@ -70,14 +77,26 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+      const storedUser = window.localStorage.getItem(USER_DATA)
 
       if (storedToken) {
-        setLoading(true)
-        await instanceAxios
+        // Load user từ localStorage trước để giảm delay
+        if (storedUser) {
+          try {
+            const parsedUser = JSON.parse(storedUser)
+            setUser(parsedUser)
+            setLoading(false)
+          } catch (e) {
+            // Invalid JSON, continue to fetch from API
+          }
+        }
+
+        // Verify và cập nhật user từ API (background)
+        instanceAxios
           .get(API_ENDPOINT.AUTH.AUTH_ME)
           .then(async response => {
-            setLoading(false)
             setUser({ ...response.data.data })
+            setLoading(false)
           })
           .catch(e => {
             clearLocalUserData()
@@ -140,7 +159,6 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
-
   const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
     loginAuthFacebook({ idToken: params.idToken, deviceToken: params.deviceToken })
       .then(async response => {
@@ -169,11 +187,15 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then(res => {
       setUser(null)
       clearLocalUserData()
-      signOut()
-      if (!LIST_PAGE_PUBLIC?.some(item => pathName?.startsWith(
-        currentLang === i18nConfig.defaultLocale ? item : `/${currentLang}/${item}`
-      ))) {
+      signOut({ redirect: false })
+      if (
+        !LIST_PAGE_PUBLIC?.some(item =>
+          pathName?.startsWith(currentLang === i18nConfig.defaultLocale ? item : `/${currentLang}/${item}`)
+        )
+      ) {
         router.replace(ROUTE_CONFIG.LOGIN)
+      } else {
+        router.replace(ROUTE_CONFIG.HOME)
       }
       dispatch(
         updateProductToCart({

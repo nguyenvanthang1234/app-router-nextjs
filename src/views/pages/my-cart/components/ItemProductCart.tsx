@@ -65,7 +65,7 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
       setItemState({
         name: data.name,
         amount: item.amount,
-        image: data.image,
+        image: data.thumbnailUrl || data.imageUrl,
         price: data.price,
         discount: discountItem,
         product: id,
