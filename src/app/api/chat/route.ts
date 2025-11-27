@@ -76,6 +76,7 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("Chat API Error:", error);
+
     return NextResponse.json(
       { error: "Có lỗi xảy ra: " + error.message },
       { status: 500 }
