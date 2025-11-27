@@ -30,6 +30,7 @@ export type TReviewItem = {
     lastName: string
     middleName: string
     avatar: string
+    avatarUrl?: string
     _id: string
   }
   product: {

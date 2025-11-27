@@ -36,6 +36,7 @@ export type TCommentItem = {
     lastName: string
     middleName: string
     avatar: string
+    avatarUrl?: string
     id: string
   }
   parent?:string
