@@ -3,7 +3,7 @@
 // ** React
 import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 // ** Mui
 import { styled, useTheme } from '@mui/material/styles'
@@ -30,6 +30,7 @@ import { convertUpdateProductToCart, createUrlQuery, formatNumberToLocal, isExpi
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+import { useNavigate } from 'src/hooks/useNavigate'
 
 // ** Storage
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
@@ -54,7 +55,7 @@ const CardProduct = (props: TCardProduct) => {
   // ** Hooks
   const { t } = useTranslation()
   const theme = useTheme()
-  const router = useRouter()
+  const router = useNavigate()
   const { user } = useAuth()
   const pathName = usePathname()
 
