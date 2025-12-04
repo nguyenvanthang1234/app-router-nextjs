@@ -5,6 +5,7 @@ import { useNProgress } from 'src/hooks/useNProgress'
 
 function NProgressHandler() {
   useNProgress()
+
   return null
 }
 
