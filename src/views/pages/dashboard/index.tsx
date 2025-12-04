@@ -58,92 +58,36 @@ const Dashboard = () => {
   const [countOrderStatus, setCountOrderStatus] = useState<Record<number, number>>({} as any)
   const [listProductPopular, setListProductPopular] = useState<TProductPopular[]>([])
 
-  // ** Fetch API
-  const fetchAllCountRecords = async () => {
+  // ** Fetch API - Gọi song song tất cả API để tối ưu performance
+  const fetchAllData = async () => {
     setLoading(true)
-    await getCountAllRecords()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountRecords(data)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
+    try {
+      const [countRecordsRes, productTypesRes, revenuesRes, userTypeRes, orderStatusRes, productPopularRes] =
+        await Promise.all([
+          getCountAllRecords(),
+          getCountProductTypes(),
+          getCountRevenueYear(),
+          getCountUserType(),
+          getCountOrderStatus(),
+          getAllProducts({ params: { limit: 5, page: 1, order: 'sold desc' } })
+        ])
 
-  const fetchAllProductTypes = async () => {
-    setLoading(true)
-    await getCountProductTypes()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountProductTypes(data)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
-
-  const fetchAllTotalRevenues = async () => {
-    setLoading(true)
-    await getCountRevenueYear()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountRevenues(data)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
-
-  const fetchAllCountUserType = async () => {
-    setLoading(true)
-    await getCountUserType()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountUserType(data?.data)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
-
-  const fetchAllCountStatusOrder = async () => {
-    setLoading(true)
-    await getCountOrderStatus()
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setCountOrderStatus(data?.data)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
-
-  const fetchListProductPopular = async () => {
-    setLoading(true)
-    await getAllProducts({ params: { limit: 5, page: 1, order: 'sold desc' } })
-      .then(res => {
-        const data = res?.data
-        setLoading(false)
-        setListProductPopular(data?.products)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
+      // Set state sau khi tất cả API hoàn thành
+      setCountRecords(countRecordsRes?.data || {})
+      setCountProductTypes(productTypesRes?.data || [])
+      setCountRevenues(revenuesRes?.data || [])
+      setCountUserType(userTypeRes?.data?.data || {})
+      setCountOrderStatus(orderStatusRes?.data?.data || {})
+      setListProductPopular(productPopularRes?.data?.products || [])
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    fetchAllCountRecords()
-    fetchAllProductTypes()
-    fetchAllTotalRevenues()
-    fetchAllCountUserType()
-    fetchAllCountStatusOrder()
-    fetchListProductPopular()
+    fetchAllData()
   }, [])
 
   return (

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 // ** libraries
 import axios, { AxiosRequestConfig } from 'axios'
 import { jwtDecode } from 'jwt-decode'
@@ -35,10 +35,29 @@ type TAxiosInterceptor = {
 
 const instanceAxios = axios.create({ baseURL: BASE_URL })
 
-const handleRedirectLogin = (router: any,pathName:string, setUser: (data: UserDataType | null) => void) => {
+// ** Đăng ký interceptor cơ bản ngay khi tạo instance (không chờ useEffect)
+// Interceptor này chạy ngay lập tức, giúp request có token mà không cần chờ component mount
+instanceAxios.interceptors.request.use(
+  config => {
+    // Chỉ chạy ở client-side
+    if (typeof window !== 'undefined') {
+      const { accessToken } = getLocalUserData()
+      const { temporaryToken } = getTemporaryToken()
+
+      const token = accessToken || temporaryToken
+      if (token && !config.headers['Authorization']) {
+        config.headers['Authorization'] = `Bearer ${token}`
+      }
+    }
+
+    return config
+  },
+  error => Promise.reject(error)
+)
+
+const handleRedirectLogin = (router: any, pathName: string, setUser: (data: UserDataType | null) => void) => {
   if (pathName !== '/') {
     router.replace('/login' + '?' + createUrlQuery('returnUrl', pathName))
-
   } else {
     router.replace('/login')
   }
@@ -48,29 +67,29 @@ const handleRedirectLogin = (router: any,pathName:string, setUser: (data: UserDa
 }
 
 let isRefreshing = false
-let failedQueue:any[] = []
+let failedQueue: any[] = []
 
-const processQueue = (error:any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if(token) {
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (token) {
       prom.resolve(token)
-    }else {
+    } else {
       prom.reject(error)
     }
   })
   failedQueue = []
 }
 
-const addRequestQueue = (config:AxiosRequestConfig):Promise<any> => {
+const addRequestQueue = (config: AxiosRequestConfig): Promise<any> => {
   return new Promise((resolve, reject) => {
     failedQueue.push({
-      resolve: (token:string) => {
-        if(config.headers) {
+      resolve: (token: string) => {
+        if (config.headers) {
           config.headers['Authorization'] = `Bearer ${token}`
         }
         resolve(config)
       },
-      reject: (err:any) => {
+      reject: (err: any) => {
         reject(err)
       }
     })
@@ -118,33 +137,33 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                     const newAccessToken = res?.data?.data?.access_token
                     if (newAccessToken) {
                       config.headers['Authorization'] = `Bearer ${newAccessToken}`
-                      processQueue(null ,newAccessToken)
+                      processQueue(null, newAccessToken)
                       if (accessToken) {
                         setLocalUserData(JSON.stringify(user), newAccessToken, refreshToken)
                       }
                     } else {
-                      handleRedirectLogin(router,pathName, setUser)
+                      handleRedirectLogin(router, pathName, setUser)
                     }
                   })
                   .catch(e => {
-                    processQueue(e ,null)
-                    handleRedirectLogin(router,pathName, setUser)
-                  }).finally(() => {
+                    processQueue(e, null)
+                    handleRedirectLogin(router, pathName, setUser)
+                  })
+                  .finally(() => {
                     isRefreshing = false
                   })
-              }else {
+              } else {
                 return await addRequestQueue(config)
               }
-
             } else {
-              handleRedirectLogin(router,pathName, setUser)
+              handleRedirectLogin(router, pathName, setUser)
             }
           } else {
-            handleRedirectLogin(router,pathName, setUser)
+            handleRedirectLogin(router, pathName, setUser)
           }
         }
       } else if (!isPublicApi) {
-        handleRedirectLogin(router,pathName, setUser)
+        handleRedirectLogin(router, pathName, setUser)
       }
 
       if (config?.params?.isPublic) {
@@ -163,7 +182,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
       instanceAxios.interceptors.response.eject(resInterceptor)
     }
   }, [])
-
 
   return <>{children}</>
 }
